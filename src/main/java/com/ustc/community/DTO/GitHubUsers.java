@@ -1,9 +1,9 @@
 package com.ustc.community.DTO;
 
 public class GitHubUsers {
-    private  String name;
-    private  Long id;
-    private  String bio;
+    private String name;
+    private Long id;
+    private String bio;
 
     public String getName() {
         return name;
@@ -28,6 +28,7 @@ public class GitHubUsers {
     public void setBio(String bio) {
         this.bio = bio;
     }
+
     @Override
     public String toString() {
         return "GitHubUsers{" +

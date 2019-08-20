@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 
@@ -18,7 +21,6 @@ import java.util.UUID;
  * 用来接收GitHub认证之后的code信息；
  * 用来跳转到callback页面
  * by Ly
- *
  */
 @Controller
 public class AuthorizeController {
@@ -34,10 +36,11 @@ public class AuthorizeController {
     private String redirect_uri;
     @Autowired
     private UserMapper userMapper;
+
     @GetMapping("/callback")
     public String callBack(@RequestParam(name = "code") String code,
                            @RequestParam(name = "state") String state,
-                           HttpServletRequest request)  {
+                           HttpServletResponse response) {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setCode(code);
         accessTokenDTO.setState(state);
@@ -48,21 +51,23 @@ public class AuthorizeController {
         String accessToken = gitHubAccessProvider.getAccessToken(accessTokenDTO);
         //System.out.println(accessToken);
         GitHubUsers gitHubUsers = gitHubAccessProvider.getUser(accessToken);
-        if (gitHubUsers!=null){
+        if (gitHubUsers != null) {
             //获取到用户，，登录成功
             User user = new User();
+            String token = UUID.randomUUID().toString();
             user.setAccountId(String.valueOf(gitHubUsers.getId()));
             user.setName(gitHubUsers.getName());
-            user.setToken(UUID.randomUUID().toString());
+            user.setToken(token);
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
             userMapper.insterUser(user);
-            request.getSession().setAttribute("user",gitHubUsers);
+            response.addCookie(new Cookie("token",token));
+            //request.getSession().setAttribute("user", gitHubUsers);
             System.out.println(gitHubUsers.getName());
             System.out.println(gitHubUsers.getId());
-            //return "index";
+            System.out.println(token);
             return "redirect:/";
-        }else{
+        } else {
             //用户为空，登录失败
             return "index";
         }
