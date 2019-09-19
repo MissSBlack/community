@@ -60,6 +60,13 @@
             <version>1.4.197</version>
             <scope>test</scope>
         </dependency>
+        <!--添加LomBok的依赖。作用是不用在bean里面写get/set，构造函数等。它会在字节码文件中自动添加-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.20</version>
+            <scope>provided</scope>
+        </dependency>
         <!--mybatis的依赖-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -75,6 +82,14 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
+
+        <!--自动部署相关-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-devtools</artifactId>
+                <optional>true</optional>
+            </dependency>
+
     </dependencies>
 
     <build>

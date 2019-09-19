@@ -1,6 +1,8 @@
-package com.ustc.community.model;
+package com.ustc.community.DTO;
 
-public class Question {
+import com.ustc.community.model.User;
+
+public class QuestionDTO {
     private Long id;
     private String title;
     private String description;
@@ -8,9 +10,10 @@ public class Question {
     private Long gmtModified;
     private Long creator;
     private Integer commentCount;
-    private  Integer viewCount;
+    private Integer viewCount;
     private Integer likeCount;
-    private  String tag;
+    private String tag;
+    private User user;
 
     public Long getId() {
         return id;
@@ -92,6 +95,11 @@ public class Question {
         this.tag = tag;
     }
 
+    public User getUser() {
+        return user;
+    }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
-

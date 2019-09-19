@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
@@ -60,12 +59,14 @@ public class AuthorizeController {
             user.setToken(token);
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
+            user.setAvatorUrl(gitHubUsers.getAvatar_url());
             userMapper.insterUser(user);
-            response.addCookie(new Cookie("token",token));
+            response.addCookie(new Cookie("token", token));
             //request.getSession().setAttribute("user", gitHubUsers);
-            System.out.println(gitHubUsers.getName());
-            System.out.println(gitHubUsers.getId());
-            System.out.println(token);
+            //System.out.println(gitHubUsers.getName());
+            // System.out.println(gitHubUsers.getId());
+            //System.out.println(token);
+            // System.out.println(user.getAvatorUrl());
             return "redirect:/";
         } else {
             //用户为空，登录失败
@@ -73,4 +74,6 @@ public class AuthorizeController {
         }
 
     }
+
 }
+

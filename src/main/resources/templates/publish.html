@@ -21,7 +21,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">SpringBoot社区</a>
+            <a class="navbar-brand" href="/">SpringBoot社区</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -36,6 +36,9 @@
                 <button type="submit" class="btn btn-default">搜索</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
+                <li th:if="${session.user!=null}">
+                    <a href="/publish">发布</a>
+                </li>
                 <li th:if="${session.user==null}">
                     <a href="https://github.com/login/oauth/authorize?client_id=4dc14c753a4098d74da9&redirect_uri=http://localhost:8080/callback&scope=user&state=123">登录</a>
                 </li>
@@ -67,20 +70,22 @@
             <form action="/publish" method="post">
                 <div class="form-group">
                     <label for="title">问题标题</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题">
+                    <input type="text" class="form-control" th:value="${title}" id="title" name="title" placeholder="问题标题" >
                 </div>
                 <div class="form-group">
                     <label for="description">问题补充</label>
-                    <textarea name="description" id="description" class="form-control" cols="30" rows="10"> </textarea>
+                    <textarea name="description" id="description" class="form-control" th:text="${description}"  cols="30" rows="10" > </textarea>
 
                 </div>
                 <div class="form-group">
                     <label for="tag">输入标签</label>
-                    <input type="text" class="form-control" id="tag" name="tag" placeholder="输入标签">
+                    <input type="text" class="form-control" th:value="${tag}" id="tag" name="tag" placeholder="输入标签" >
 
                 </div>
 
-                <button type="submit" class="btn btn-success btn-publish">发布</button>
+
+                <span class="alert alert-warning" role="alert" aria-hidden="true" th:text="${error}" ></span>
+                <button type="submit" class="btn btn-success btn-publish ">发布</button>
             </form>
 
         </div>

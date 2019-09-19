@@ -7,6 +7,15 @@ public class User {
     private String token;
     private Long gmtCreate;
     private Long gmtModified;
+    private String avatorUrl;
+
+    public String getAvatorUrl() {
+        return avatorUrl;
+    }
+
+    public void setAvatorUrl(String avatorUrl) {
+        this.avatorUrl = avatorUrl;
+    }
 
     public Integer getId() {
         return id;
