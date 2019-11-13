@@ -63,10 +63,6 @@ public class AuthorizeController {
             userMapper.insterUser(user);
             response.addCookie(new Cookie("token", token));
             //request.getSession().setAttribute("user", gitHubUsers);
-            //System.out.println(gitHubUsers.getName());
-            // System.out.println(gitHubUsers.getId());
-            //System.out.println(token);
-            // System.out.println(user.getAvatorUrl());
             return "redirect:/";
         } else {
             //用户为空，登录失败

@@ -4,6 +4,7 @@ import com.ustc.community.mapper.QuestionMapper;
 import com.ustc.community.mapper.UserMapper;
 import com.ustc.community.model.Question;
 import com.ustc.community.model.User;
+import com.ustc.community.utils.LoginUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,12 +22,15 @@ public class PublishController {
     private QuestionMapper questionMapper;
     @Autowired
     private UserMapper userMapper;
-   // private LoginUtil loginUtil=new LoginUtil();
-    @GetMapping("/publish" )
-    public String publish(HttpServletRequest request){
 
-        return  "publish";
+    /* @Autowired
+     private LoginUtil loginUtil;*/
+    @GetMapping("/publish")
+    public String publish(HttpServletRequest request) {
+
+        return "publish";
     }
+
     @PostMapping("/publish")
     public String addQuestion(
             @RequestParam("title") String title,
@@ -34,55 +38,37 @@ public class PublishController {
             @RequestParam("tag") String tag,
             HttpServletRequest request,
             Model model) {
-            model.addAttribute("title",title);
-            model.addAttribute("description",description);
-            model.addAttribute("tag",tag);
-            if (title==null||title==""){
-                model.addAttribute("error","标题不能为空！");
-                return "publish";
-            }
-            if (description==null||description==""){
-            model.addAttribute("error","描述不能为空！");
+        model.addAttribute("title", title);
+        model.addAttribute("description", description);
+        model.addAttribute("tag", tag);
+        if (title == null || title == "") {
+            model.addAttribute("error", "标题不能为空！");
             return "publish";
-           }
-           if (tag==null||tag==""){
-            model.addAttribute("error","标签不能为空！");
-            return "publish";
-          }
-
-            User user=null;
-            Cookie[] cookies = request.getCookies();
-            if (cookies==null){
-                model.addAttribute("error","User is not login!");
-                return "publish";
-            }
-            for (Cookie cookie:cookies) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();
-                    user = userMapper.findByToken(token);
-                    //System.out.println(user.getGmtCreate());
-                    //System.out.println(user.getAccountId());
-                    //System.out.println(user.getAvatorUrl());
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
-                    }
-                    break;
-                }
-            }
-            if (user==null){
-                model.addAttribute("error","User is not login!");
-                return "publish";
-            }
-           Question question=new Question();
-           // question.setTitle("hello");
-           question.setTitle(title);
-           question.setDescription(description);
-           question.setTag(tag);
-           question.setGmtCreate(System.currentTimeMillis());
-           question.setGmtModified(System.currentTimeMillis());
-           question.setCreator( user.getId().longValue());
-           questionMapper.create(question);
-           return "redirect:/";
         }
+        if (description == null || description == "") {
+            model.addAttribute("error", "描述不能为空！");
+            return "publish";
+        }
+        if (tag == null || tag == "") {
+            model.addAttribute("error", "标签不能为空！");
+            return "publish";
+        }
+
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
+            model.addAttribute("error", "User is not login!");
+            return "publish";
+        }
+        Question question = new Question();
+        // question.setTitle("hello");
+        question.setTitle(title);
+        question.setDescription(description);
+        question.setTag(tag);
+        question.setGmtCreate(System.currentTimeMillis());
+        question.setGmtModified(System.currentTimeMillis());
+        question.setCreator(user.getId().longValue());
+        questionMapper.create(question);
+        return "redirect:/";
     }
+}
 
