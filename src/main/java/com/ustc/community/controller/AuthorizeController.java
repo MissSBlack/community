@@ -50,23 +50,37 @@ public class AuthorizeController {
         String accessToken = gitHubAccessProvider.getAccessToken(accessTokenDTO);
         //System.out.println(accessToken);
         GitHubUsers gitHubUsers = gitHubAccessProvider.getUser(accessToken);
+        //从gitHub成功获取到用户信息
         if (gitHubUsers != null) {
-            //获取到用户，，登录成功
-            User user = new User();
-            String token = UUID.randomUUID().toString();
-            user.setAccountId(String.valueOf(gitHubUsers.getId()));
-            user.setName(gitHubUsers.getName());
-            user.setToken(token);
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
-            user.setAvatorUrl(gitHubUsers.getAvatar_url());
-            userMapper.insterUser(user);
-            response.addCookie(new Cookie("token", token));
+            //判断用户是否已经存在于数据库，如果有，就更新用户，否则，创建一个新用户
+            String accountId=String.valueOf(gitHubUsers.getId());
+            User dbUser=userMapper.getUserByAccountId(accountId);
+            if (dbUser==null){
+                User user = new User();
+                String token = UUID.randomUUID().toString();
+                user.setAccountId(String.valueOf(gitHubUsers.getId()));
+                user.setName(gitHubUsers.getName());
+                user.setToken(token);
+                user.setGmtCreate(System.currentTimeMillis());
+                user.setGmtModified(user.getGmtCreate());
+                user.setAvatorUrl(gitHubUsers.getAvatar_url());
+                userMapper.insterUser(user);
+                response.addCookie(new Cookie("token", token));
+            }else{
+                String token=dbUser.getToken();
+                String name=gitHubUsers.getName();
+                String avatorUrl=gitHubUsers.getAvatar_url();
+                Long gmtModified=System.currentTimeMillis();
+                userMapper.updateUser(name,avatorUrl,gmtModified,accountId);
+                response.addCookie(new Cookie("token", token));
+            }
             //request.getSession().setAttribute("user", gitHubUsers);
             return "redirect:/";
+            //return "index";
         } else {
             //用户为空，登录失败
-            return "index";
+//            return "index";
+            return "redirect:/";
         }
 
     }

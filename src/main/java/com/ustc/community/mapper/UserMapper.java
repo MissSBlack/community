@@ -1,10 +1,7 @@
 package com.ustc.community.mapper;
 
 import com.ustc.community.model.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface UserMapper {
@@ -16,4 +13,8 @@ public interface UserMapper {
     User findByAccountId(String accountId);
     @Select("select * from user where id=#{id}")
     User findById(@Param("id") Integer id);
+    @Select("select * from user where account_id=#{accountId}")
+    User getUserByAccountId(@Param("accountId") String accountId);
+    @Update("update user set name=#{name},avator_url=#{avatorUrl},gmt_modified=#{gmtModified} where account_id=#{accountId}")
+    void updateUser(@Param("name") String name,@Param("avatorUrl") String avatorUrl,@Param("gmtModified") Long gmtModified,@Param("accountId") String accountId);
 }

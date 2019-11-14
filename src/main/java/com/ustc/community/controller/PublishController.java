@@ -8,9 +8,7 @@ import com.ustc.community.utils.LoginUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -23,8 +21,16 @@ public class PublishController {
     @Autowired
     private UserMapper userMapper;
 
-    /* @Autowired
-     private LoginUtil loginUtil;*/
+    @RequestMapping("/publish/{id}")
+    public String edit(@PathVariable(name = "id") Integer id,
+                       Model model){
+        Question question=questionMapper.getQuesionById(id);
+        model.addAttribute("title", question.getTitle());
+        model.addAttribute("description", question.getDescription());
+        model.addAttribute("tag", question.getTag());
+        model.addAttribute("id",id);
+        return "publish";
+    }
     @GetMapping("/publish")
     public String publish(HttpServletRequest request) {
 
@@ -36,6 +42,7 @@ public class PublishController {
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("tag") String tag,
+            @RequestParam("id") String id,
             HttpServletRequest request,
             Model model) {
         model.addAttribute("title", title);
@@ -59,15 +66,20 @@ public class PublishController {
             model.addAttribute("error", "User is not login!");
             return "publish";
         }
-        Question question = new Question();
-        // question.setTitle("hello");
-        question.setTitle(title);
-        question.setDescription(description);
-        question.setTag(tag);
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(System.currentTimeMillis());
-        question.setCreator(user.getId().longValue());
-        questionMapper.create(question);
+        if (id!=null&&!"".equals(id)){
+            Long gmtModified=System.currentTimeMillis();
+            questionMapper.updateQuestion(id,title,description,tag,gmtModified);
+        }else {
+            Question question = new Question();
+            question.setTitle(title);
+            question.setDescription(description);
+            question.setTag(tag);
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(System.currentTimeMillis());
+            question.setCreator(user.getId().longValue());
+            questionMapper.create(question);
+        }
+
         return "redirect:/";
     }
 }
