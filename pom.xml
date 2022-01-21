@@ -57,7 +57,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.197</version>
+            <version>2.1.210</version>
             <scope>test</scope>
         </dependency>
         <!--添加LomBok的依赖。作用是不用在bean里面写get/set，构造函数等。它会在字节码文件中自动添加-->
@@ -111,7 +111,7 @@
                     <dependency>
                         <groupId>com.h2database</groupId>
                         <artifactId>h2</artifactId>
-                        <version>1.4.197</version>
+                        <version>2.1.210</version>
                     </dependency>
                 </dependencies>
             </plugin>
